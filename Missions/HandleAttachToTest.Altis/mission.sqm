@@ -1,0 +1,225 @@
+version=53;
+class EditorData
+{
+	moveGridStep=0.125;
+	angleGridStep=0.2617994;
+	scaleGridStep=1;
+	autoGroupingDist=10;
+	toggles=1;
+	class ItemIDProvider
+	{
+		nextID=106;
+	};
+	class Camera
+	{
+		pos[]={20666.557,10.823129,19462.85};
+		dir[]={0.16094337,-0.61242729,-0.77406853};
+		up[]={0.12469061,0.79039598,-0.59971273};
+		aside[]={-0.97914433,2.3981556e-008,-0.20358491};
+	};
+};
+binarizationWanted=0;
+addons[]=
+{
+	"A3_Soft_F_Gamma_Van_01",
+	"A3_Characters_F",
+	"A3_Structures_F_Items_Vessels"
+};
+class AddonsMetaData
+{
+	class List
+	{
+		items=3;
+		class Item0
+		{
+			className="A3_Soft_F_Gamma";
+			name="Arma 3 - Unarmored Land Vehicles";
+			author="Bohemia Interactive";
+			url="https://www.arma3.com";
+		};
+		class Item1
+		{
+			className="A3_Characters_F";
+			name="Arma 3 Alpha - Characters and Clothing";
+			author="Bohemia Interactive";
+			url="https://www.arma3.com";
+		};
+		class Item2
+		{
+			className="A3_Structures_F";
+			name="Arma 3 - Buildings and Structures";
+			author="Bohemia Interactive";
+			url="https://www.arma3.com";
+		};
+	};
+};
+randomSeed=5106320;
+class ScenarioData
+{
+	author="Rockhount";
+};
+class Mission
+{
+	class Intel
+	{
+		timeOfChanges=1800.0002;
+		startWeather=0.30000001;
+		startWind=0.1;
+		startWaves=0.1;
+		forecastWeather=0.30000001;
+		forecastWind=0.1;
+		forecastWaves=0.1;
+		forecastLightnings=0.1;
+		year=2035;
+		month=6;
+		day=24;
+		hour=12;
+		minute=0;
+		startFogDecay=0.014;
+		forecastFogDecay=0.014;
+	};
+	class Entities
+	{
+		items=5;
+		class Item0
+		{
+			dataType="Object";
+			class PositionInfo
+			{
+				position[]={20599.777,2.2956858,19437.777};
+				angles[]={0.055941612,3.0922954,6.2285728};
+			};
+			side="Empty";
+			flags=4;
+			class Attributes
+			{
+			};
+			id=60;
+			type="C_Van_01_transport_F";
+			atlOffset=-0.014907002;
+		};
+		class Item1
+		{
+			dataType="Group";
+			side="Civilian";
+			class Entities
+			{
+				items=1;
+				class Item0
+				{
+					dataType="Object";
+					class PositionInfo
+					{
+						position[]={20671.211,3.9735677,19456.027};
+						angles[]={0,3.9657023,0};
+					};
+					side="Civilian";
+					flags=7;
+					class Attributes
+					{
+						init="nul=[""Land_WaterBarrel_F"",""C_Van_01_transport_F"",0,[[0,-1,0.04],[0,-2.5,0.04]]] execVM ""HandleAttachTo.sqf"";";
+						isPlayer=1;
+					};
+					id=65;
+					type="C_man_w_worker_F";
+					atlOffset=0.00029182434;
+					class CustomAttributes
+					{
+						class Attribute0
+						{
+							property="speaker";
+							expression="_this setspeaker _value;";
+							class Value
+							{
+								class data
+								{
+									class type
+									{
+										type[]=
+										{
+											"STRING"
+										};
+									};
+									value="Male04GRE";
+								};
+							};
+						};
+						class Attribute1
+						{
+							property="pitch";
+							expression="_this setpitch _value;";
+							class Value
+							{
+								class data
+								{
+									class type
+									{
+										type[]=
+										{
+											"SCALAR"
+										};
+									};
+									value=0.95999998;
+								};
+							};
+						};
+						nAttributes=2;
+					};
+				};
+			};
+			class Attributes
+			{
+			};
+			id=64;
+			atlOffset=0.00029182434;
+		};
+		class Item2
+		{
+			dataType="Object";
+			class PositionInfo
+			{
+				position[]={20673.686,4.5314822,19452.129};
+				angles[]={6.2822089,0,6.2818937};
+			};
+			side="Empty";
+			flags=4;
+			class Attributes
+			{
+			};
+			id=68;
+			type="Land_WaterBarrel_F";
+		};
+		class Item3
+		{
+			dataType="Object";
+			class PositionInfo
+			{
+				position[]={20672.293,4.5313225,19450.178};
+				angles[]={6.2822089,0,6.2818937};
+			};
+			side="Empty";
+			flags=4;
+			class Attributes
+			{
+			};
+			id=104;
+			type="Land_WaterBarrel_F";
+		};
+		class Item4
+		{
+			dataType="Object";
+			class PositionInfo
+			{
+				position[]={20674.629,4.6225944,19450.404};
+				angles[]={0.047963165,0,0.10362761};
+			};
+			side="Empty";
+			flags=4;
+			class Attributes
+			{
+			};
+			id=105;
+			type="Land_WaterBarrel_F";
+		};
+	};
+};
