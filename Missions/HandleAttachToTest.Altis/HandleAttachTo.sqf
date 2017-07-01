@@ -32,10 +32,10 @@
 	dann erscheint die Chat-Meldung "No suitable vehicle nearby". Man sollte diesen Skript nur einmal pro Fahrzeugklassennamen benutzen.
 */
 private _Local_var_Exit = false;
-private _Local_var_ContainerType = if ((count _this > 0) && {typeName (_this select 0) == "STRING"}) then {_this select 0} else {_Local_var_Exit = true};
-private _Local_var_TruckType = if ((count _this > 1) && {typeName (_this select 1) == "STRING"}) then {_this select 1} else {_Local_var_Exit = true};
-private _Local_var_ContainerDirOffset = if ((count _this > 2) && {typeName (_this select 2) == "SCALAR"}) then {_this select 2} else {_Local_var_Exit = true};
-private _Local_var_ContainerPositions = if ((count _this > 3) && {typeName (_this select 3) == "ARRAY"}) then {_this select 3} else {_Local_var_Exit = true};
+private _Local_var_ContainerType = if ((count _this > 0) && {typeName (_this select 0) == "STRING"}) then {_this select 0} else {_Local_var_Exit = true;false};
+private _Local_var_TruckType = if ((count _this > 1) && {typeName (_this select 1) == "STRING"}) then {_this select 1} else {_Local_var_Exit = true;false};
+private _Local_var_ContainerDirOffset = if ((count _this > 2) && {typeName (_this select 2) == "SCALAR"}) then {_this select 2} else {_Local_var_Exit = true;false};
+private _Local_var_ContainerPositions = if ((count _this > 3) && {typeName (_this select 3) == "ARRAY"}) then {_this select 3} else {_Local_var_Exit = true;false};
 if (_Local_var_Exit) exitWith
 {
 	diag_log "HandleSimpleAttachTo Error: Wrong parameter";
