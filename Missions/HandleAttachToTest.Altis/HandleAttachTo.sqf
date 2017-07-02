@@ -1,5 +1,5 @@
 /*
-	Made by Rockhount - HandleAttachTo Script v1.1 (SP/MP & HC compatible)
+	Made by Rockhount - HandleAttachTo Script v1.2 (SP/MP & HC compatible)
 	Errors will be written into the rpt and starts with "HandleSimpleAttachTo Error:"
 	Call:
 	["Land_WaterBarrel_F","C_Van_01_transport_F",90,[[0,-1,0.04],[0,-2.5,0.04]]] execVM "HandleSimpleAttachTo.sqf";
@@ -15,7 +15,7 @@
 	message with "Vehicle is already fully loaded." will appear. If there is no vehicle within 50 meters, then a chat message
 	with "No suitable vehicle nearby." will appear. You should use this script only once per vehicle class.
 	-------------------------------------------------------------------------------------------------------------------------
-	Gemacht von Rockhount - HandleAttachTo Skript v1.1 (SP/MP & HC Kompatibel)
+	Gemacht von Rockhount - HandleAttachTo Skript v1.2 (SP/MP & HC Kompatibel)
 	Fehler werden in die RPT geschrieben und starten mit "HandleSimpleAttachTo Error:"
 	Aufruf:
 	["Land_WaterBarrel_F","C_Van_01_transport_F",90,[[0,-1,0.04],[0,-2.5,0.04]]] execVM "HandleSimpleAttachTo.sqf";
@@ -42,102 +42,95 @@ if (_Local_var_Exit) exitWith
 };
 if (hasinterface) then
 {
-	[_Local_var_ContainerType, _Local_var_TruckType, _Local_var_ContainerDirOffset, _Local_var_ContainerPositions] spawn
+	while {true} do
 	{
-		private _Local_var_ContainerType = _this select 0;
-		private _Local_var_TruckType = _this select 1;
-		private _Local_var_ContainerDirOffset = _this select 2;
-		private _Local_var_ContainerPositions = _this select 3;
-		while {true} do
+		Private ["_Local_var_AID"];
+		if ((!isNull Player) && {alive Player}) then
 		{
-			Private ["_Local_var_AID"];
-			if ((!isNull Player) && {alive Player}) then
+			waitUntil{sleep 2;(vehicle Player == Player) && {!isNull cursorObject} && {(typeOf cursorObject) == _Local_var_ContainerType} && {(cursorObject distance Player) < 15}};
+			if (isNull (attachedTo cursorObject)) then
 			{
-				waitUntil{sleep 2;(vehicle Player == Player) && {!isNull cursorObject} && {(typeOf cursorObject) == _Local_var_ContainerType} && {(cursorObject distance Player) < 15}};
-				if (isNull (attachedTo cursorObject)) then
+				_Local_var_AID = Player addAction ["Load", 
 				{
-					_Local_var_AID = Player addAction ["Load", 
+					if (((typeOf cursorObject) == ((_this select 3) select 0)) && {isNull (attachedTo cursorObject)}) then
 					{
-						if (((typeOf cursorObject) == ((_this select 3) select 0)) && {isNull (attachedTo cursorObject)}) then
+						private _Local_var_TruckType =  (_this select 3) select 1;
+						private _Local_var_Truck = nearestObject [getPos Player, _Local_var_TruckType];
+						if (!isNull _Local_var_Truck) then
 						{
-							private _Local_var_TruckType =  (_this select 3) select 1;
-							private _Local_var_Truck = nearestObject [getPos Player, _Local_var_TruckType];
-							if (!isNull _Local_var_Truck) then
+							private _Local_var_ContainerDirOffset =  (_this select 3) select 2;
+							private _Local_var_ContainerPositions =  (_this select 3) select 3;
+							private _Local_var_ContainerLoadIndex = [];
+							private _Local_var_LoadedPositionsCount = count _Local_var_ContainerPositions;
+							_Local_var_ContainerLoadIndex resize _Local_var_LoadedPositionsCount;
+							{_Local_var_ContainerLoadIndex set [_forEachIndex, false]} forEach _Local_var_ContainerLoadIndex;
+							private _Local_var_Container = cursorObject;
+							private _Local_var_LoadedPositions = _Local_var_Truck getVariable ["OccupiedContainerSpaces", _Local_var_ContainerLoadIndex];
+							private _Local_var_ContainerLoaded = false;
+							for [{_i = 0}, {_i < _Local_var_LoadedPositionsCount}, {_i = _i + 1}] do
 							{
-								private _Local_var_ContainerDirOffset =  (_this select 3) select 2;
-								private _Local_var_ContainerPositions =  (_this select 3) select 3;
-								private _Local_var_ContainerLoadIndex = [];
-								private _Local_var_LoadedPositionsCount = count _Local_var_ContainerPositions;
-								_Local_var_ContainerLoadIndex resize _Local_var_LoadedPositionsCount;
-								{_Local_var_ContainerLoadIndex set [_forEachIndex, false]} forEach _Local_var_ContainerLoadIndex;
-								private _Local_var_Container = cursorObject;
-								private _Local_var_LoadedPositions = _Local_var_Truck getVariable ["OccupiedContainerSpaces", _Local_var_ContainerLoadIndex];
-								private _Local_var_ContainerLoaded = false;
-								for [{_i = 0}, {_i < _Local_var_LoadedPositionsCount}, {_i = _i + 1}] do
+								if (!(_Local_var_LoadedPositions select _i)) exitWith
 								{
-									if (!(_Local_var_LoadedPositions select _i)) exitWith
-									{
-										_Local_var_Container attachTo [_Local_var_Truck,_Local_var_ContainerPositions select _i];
-										[_Local_var_Container, _Local_var_ContainerDirOffset] remoteExec ["setDir", _Local_var_Container, false];
-										_Local_var_Container setVariable ["ContainerLoadIndex", _i, true];
-										_Local_var_LoadedPositions set [_i, true];
-										_Local_var_ContainerLoaded = true;
-									};
+									_Local_var_Container attachTo [_Local_var_Truck,_Local_var_ContainerPositions select _i];
+									[_Local_var_Container, _Local_var_ContainerDirOffset] remoteExec ["setDir", _Local_var_Container, false];
+									_Local_var_Container setVariable ["ContainerLoadIndex", _i, true];
+									_Local_var_LoadedPositions set [_i, true];
+									_Local_var_ContainerLoaded = true;
 								};
-								if (_Local_var_ContainerLoaded) then
-								{
-									_Local_var_Truck setVariable ["OccupiedContainerSpaces", _Local_var_LoadedPositions, true];
-								}
-								else
-								{
-									systemChat "Vehicle is already fully loaded.";
-								};
+							};
+							if (_Local_var_ContainerLoaded) then
+							{
+								_Local_var_Truck setVariable ["OccupiedContainerSpaces", _Local_var_LoadedPositions, true];
 							}
 							else
 							{
-								systemChat "No suitable vehicle nearby.";
+								systemChat "Vehicle is already fully loaded.";
 							};
-						};
-					}, [_Local_var_ContainerType, _Local_var_TruckType, _Local_var_ContainerDirOffset, _Local_var_ContainerPositions]];
-				}
-				else
-				{
-					_Local_var_AID = Player addAction ["Unload",
-					{
-						private _Local_var_ContainerType = (_this select 3) select 0;
-						if (((typeOf cursorObject) == _Local_var_ContainerType) && {!isNull (attachedTo cursorObject)}) then
+						}
+						else
 						{
-							private _Local_var_ContainerDirOffset =  (_this select 3) select 1;
-							private _Local_var_Container = cursorObject;
-							private _Local_var_Truck = attachedTo _Local_var_Container;
-							private _Local_var_ContainerLoadIndex = _Local_var_Container getVariable ["ContainerLoadIndex", -1];
-							private _Local_var_LoadedPositions = _Local_var_Truck getVariable "OccupiedContainerSpaces";
-							if ((!isNull _Local_var_Truck) && {_Local_var_ContainerLoadIndex > -1}) then
-							{
-								private _Local_var_EmptyContainerPos = (_Local_var_Container getRelPos [sizeOf _Local_var_ContainerType, 270 - _Local_var_ContainerDirOffset]) findEmptyPosition [0, 30, _Local_var_ContainerType];
-								if (count _Local_var_EmptyContainerPos == 0) then
-								{
-									systemChat "No space for unloading.";
-								}
-								else
-								{
-									detach _Local_var_Container;
-									_Local_var_Container setPosATL _Local_var_EmptyContainerPos;
-									_Local_var_LoadedPositions set [_Local_var_ContainerLoadIndex, false];
-									_Local_var_Truck setVariable ["OccupiedContainerSpaces", _Local_var_LoadedPositions, true];
-									_Local_var_Container setVariable ["ContainerLoadIndex", -1, true];
-								};
-							};
+							systemChat "No suitable vehicle nearby.";
 						};
-					},  [_Local_var_ContainerType, _Local_var_ContainerDirOffset]];
-				};
-				waitUntil{sleep 2;(vehicle Player != Player) || {isNull cursorObject} || {(typeOf cursorObject) != _Local_var_ContainerType} || {(cursorObject distance Player) > 15}};
-				Player removeAction _Local_var_AID;
+					};
+				}, [_Local_var_ContainerType, _Local_var_TruckType, _Local_var_ContainerDirOffset, _Local_var_ContainerPositions]];
 			}
 			else
 			{
-				sleep 10;
+				_Local_var_AID = Player addAction ["Unload",
+				{
+					private _Local_var_ContainerType = (_this select 3) select 0;
+					if (((typeOf cursorObject) == _Local_var_ContainerType) && {!isNull (attachedTo cursorObject)}) then
+					{
+						private _Local_var_ContainerDirOffset =  (_this select 3) select 1;
+						private _Local_var_Container = cursorObject;
+						private _Local_var_Truck = attachedTo _Local_var_Container;
+						private _Local_var_ContainerLoadIndex = _Local_var_Container getVariable ["ContainerLoadIndex", -1];
+						private _Local_var_LoadedPositions = _Local_var_Truck getVariable "OccupiedContainerSpaces";
+						if ((!isNull _Local_var_Truck) && {_Local_var_ContainerLoadIndex > -1}) then
+						{
+							private _Local_var_EmptyContainerPos = (_Local_var_Container getRelPos [sizeOf _Local_var_ContainerType, 270 - _Local_var_ContainerDirOffset]) findEmptyPosition [0, 30, _Local_var_ContainerType];
+							if (count _Local_var_EmptyContainerPos == 0) then
+							{
+								systemChat "No space for unloading.";
+							}
+							else
+							{
+								detach _Local_var_Container;
+								_Local_var_Container setPosATL _Local_var_EmptyContainerPos;
+								_Local_var_LoadedPositions set [_Local_var_ContainerLoadIndex, false];
+								_Local_var_Truck setVariable ["OccupiedContainerSpaces", _Local_var_LoadedPositions, true];
+								_Local_var_Container setVariable ["ContainerLoadIndex", -1, true];
+							};
+						};
+					};
+				},  [_Local_var_ContainerType, _Local_var_ContainerDirOffset]];
 			};
+			waitUntil{sleep 2;(vehicle Player != Player) || {isNull cursorObject} || {(typeOf cursorObject) != _Local_var_ContainerType} || {(cursorObject distance Player) > 15}};
+			Player removeAction _Local_var_AID;
+		}
+		else
+		{
+			sleep 10;
 		};
 	};
 };
