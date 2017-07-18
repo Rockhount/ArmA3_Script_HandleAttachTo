@@ -1,5 +1,6 @@
 /*
-	Made by Rockhount - HandleAttachTo Script v1.2 (SP/MP & HC compatible)
+	Made by Rockhount - HandleAttachTo Script v1.3 (SP/MP & HC compatible)
+	More Info at: https://github.com/Rockhount/ArmA3_Script_HandleAttachTo
 	Errors will be written into the rpt and starts with "HandleSimpleAttachTo Error:"
 	Call:
 	["Land_WaterBarrel_F","C_Van_01_transport_F",90,[[0,-1,0.04],[0,-2.5,0.04]]] execVM "HandleSimpleAttachTo.sqf";
@@ -15,7 +16,8 @@
 	message with "Vehicle is already fully loaded." will appear. If there is no vehicle within 50 meters, then a chat message
 	with "No suitable vehicle nearby." will appear. You should use this script only once per vehicle class.
 	-------------------------------------------------------------------------------------------------------------------------
-	Gemacht von Rockhount - HandleAttachTo Skript v1.2 (SP/MP & HC Kompatibel)
+	Gemacht von Rockhount - HandleAttachTo Skript v1.3 (SP/MP & HC Kompatibel)
+	Mehr Infos unter: https://github.com/Rockhount/ArmA3_Script_HandleAttachTo
 	Fehler werden in die RPT geschrieben und starten mit "HandleSimpleAttachTo Error:"
 	Aufruf:
 	["Land_WaterBarrel_F","C_Van_01_transport_F",90,[[0,-1,0.04],[0,-2.5,0.04]]] execVM "HandleSimpleAttachTo.sqf";
@@ -36,6 +38,20 @@ private _Local_var_ContainerType = if ((count _this > 0) && {typeName (_this sel
 private _Local_var_TruckType = if ((count _this > 1) && {typeName (_this select 1) == "STRING"}) then {_this select 1} else {_Local_var_Exit = true;false};
 private _Local_var_ContainerDirOffset = if ((count _this > 2) && {typeName (_this select 2) == "SCALAR"}) then {_this select 2} else {_Local_var_Exit = true;false};
 private _Local_var_ContainerPositions = if ((count _this > 3) && {typeName (_this select 3) == "ARRAY"}) then {_this select 3} else {_Local_var_Exit = true;false};
+if (isNil "Global_var_HandleAttachToUsedClasses") then
+{
+	Global_var_HandleAttachToUsedClasses = [];
+	Global_var_HandleAttachToUsedClasses pushBack _Local_var_TruckType;
+}
+else
+{
+	if ((Global_var_HandleAttachToUsedClasses pushBackUnique _Local_var_TruckType) isEqualTo -1) then
+	{
+		systemChat "HandleAttachTo: Don't use the same vehicle class twice.";
+		diag_log "HandleAttachTo: Don't use the same vehicle class twice.";
+		_Local_var_Exit = true;
+	};
+};
 if (_Local_var_Exit) exitWith
 {
 	diag_log "HandleSimpleAttachTo Error: Wrong parameter";
@@ -109,7 +125,7 @@ if (hasinterface) then
 						if ((!isNull _Local_var_Truck) && {_Local_var_ContainerLoadIndex > -1}) then
 						{
 							private _Local_var_EmptyContainerPos = (_Local_var_Container getRelPos [sizeOf _Local_var_ContainerType, 270 - _Local_var_ContainerDirOffset]) findEmptyPosition [0, 30, _Local_var_ContainerType];
-							if (count _Local_var_EmptyContainerPos == 0) then
+							if (_Local_var_EmptyContainerPos isEqualTo []) then
 							{
 								systemChat "No space for unloading.";
 							}
